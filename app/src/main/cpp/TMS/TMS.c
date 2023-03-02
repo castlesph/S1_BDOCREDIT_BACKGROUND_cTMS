@@ -1545,6 +1545,114 @@ int inCTOS_CTMSUPDATE(void)
     return d_OK;
 }
 
+int inCTOS_CTMSUPDATE_BackGround(void)
+{
+    BYTE szInbuf[1024 + 1];
+    BYTE szOubuf[1024 + 1];
+    int inLen;
+    int inRet = d_NO;
+    BYTE szTMSHostPort[6+1];
+    BYTE szTLSHostPort[6+1];
+    BYTE szCurrDate[8] = {0};
+    BYTE szCommMode[6+1];
+    CTOS_RTC SetRTC;
+
+    vdDebug_LogPrintf("saturn =====1.inCTOS_CTMSUPDATE_BackGround=====.");
+
+    inTCTRead(1);
+    inTMSEXRead(1);
+    inCPTRead(1);
+
+    inRet = inCheckBattery();
+    if(d_OK != inRet)
+        return inRet;
+
+    // validate serial num -- sidumili
+    if (strlen(strTMSEX.szSerialNo) < SERIAL_NUM_LEN || atoi(strTMSEX.szSerialNo) <= 0)
+    {
+        inDisplayMessageBoxWithButtonConfirmation(1,8,strTMSEX.szSerialNo,"Invalid serial number","","",MSG_TYPE_INFO, BUTTON_TYPE_NONE_OK);
+        return d_NO;
+    }
+
+    // szTMSHostIP/inTMSHostPortNum
+    // checking for alive connection -- sidumili
+    vdSetInit_Connect(1);
+    inRet = inCTOS_CTMS_Connect(1);
+    vdDebug_LogPrintf("inCTOS_CTMS_Connect,szTMSHostIP/inTMSHostPortNum,inRet=[%d]", inRet);
+    if (inRet != d_OK)
+    {
+        vdCTOS_TransEndReset();
+        return d_NO;
+    }
+
+    // szTLSHostIP/inTLSHostPortNum
+    // checking for alive connection -- sidumili
+    vdSetInit_Connect(1);
+    inRet = inCTOS_CTMS_Connect(2);
+    vdDebug_LogPrintf("inCTOS_CTMS_Connect,szTLSHostIP/inTLSHostPortNum,inRet=[%d]", inRet);
+    if (inRet != d_OK)
+    {
+        vdCTOS_TransEndReset();
+        return d_NO;
+    }
+
+    inRet = inCTOS_ChkBatchEmpty_AllHosts();
+    vdDebug_LogPrintf("inCTOS_ChkBatchEmpty_AllHosts, inRet=[%d]", inRet);
+    if (d_OK != inRet) {
+        vdDebug_LogPrintf("saturn =====inCTOS_CTMSUPDATE Batch not Empty=====");
+        vdCTOS_TransEndReset();
+        return inRet;
+    }
+
+    CTOS_RTCGet(&SetRTC);
+    memset(szCurrDate, 0x00, sizeof(szCurrDate));
+    sprintf(szCurrDate,"%02d%02d%02d", SetRTC.bYear, SetRTC.bMonth, SetRTC.bDay);
+    vdDebug_LogPrintf("AAA>> inCTOS_CTMSUPDATE szCurrDate[%s]", szCurrDate);
+    put_env_char("AUTODLDATE",szCurrDate);
+
+    vdDebug_LogPrintf("strTMSEX.szTMSMode=[%s]", strTMSEX.szTMSMode);
+    vdDebug_LogPrintf("strTMSEX.szSerialNo=[%s]", strTMSEX.szSerialNo);
+    vdDebug_LogPrintf("strTMSEX.szTMSHostIP/inTLSHostPortNum=[%s],[%ld]", strTMSEX.szTMSHostIP, strTMSEX.inTLSHostPortNum);
+    vdDebug_LogPrintf("strTMSEX.szTLSHostIP/inTLSHostPortNum=[%s],[%ld]", strTMSEX.szTLSHostIP, strTMSEX.inTLSHostPortNum);
+
+    memset(szInbuf, 0x00, sizeof(szInbuf));
+    strcpy(szInbuf, strTMSEX.szSerialNo);
+    strcat(szInbuf, "|");
+    strcat(szInbuf, strTMSEX.szTMSHostIP);
+    strcat(szInbuf, "|");
+
+    memset(szTMSHostPort, 0x00,sizeof(szTMSHostPort));
+    sprintf(szTMSHostPort, "%d", strTMSEX.inTMSHostPortNum);
+    strcat(szInbuf, szTMSHostPort);
+
+    strcat(szInbuf, "|");
+    strcat(szInbuf, strTMSEX.szTLSHostIP);
+    strcat(szInbuf, "|");
+
+    memset(szTLSHostPort, 0x00,sizeof(szTLSHostPort));
+    sprintf(szTLSHostPort, "%d", strTMSEX.inTLSHostPortNum);
+    strcat(szInbuf, szTLSHostPort);
+
+    strcat(szInbuf, "|");
+    strcat(szInbuf, strTMSEX.szTMSMode);
+
+    strcat(szInbuf, "|");
+    memset(szCommMode, 0x00,sizeof(szCommMode));
+    sprintf(szCommMode, "%d", strCPT.inCommunicationMode);
+    strcat(szInbuf, szCommMode);
+
+    vdDebug_LogPrintf("len=[%d],szInbuf=[%s]", strlen(szInbuf), szInbuf);
+
+    vdDebug_LogPrintf("saturn End.=====inCTOS_CTMSUPDATE=====");
+    vdDisplayMessageBox(1, 8, "Processing", "", MSG_PLS_WAIT, MSG_TYPE_PROCESS);
+    CTOS_Delay(500);
+
+    inRet = inCallJAVA_CTMSUPDATE(szInbuf, szOubuf, &inLen);
+    vdDebug_LogPrintf("inCallJAVA_CTMSUPDATE, inRet=[%d]", inRet);
+
+    return d_OK;
+}
+
 // CTMS connection checking -- sidumili
 int inCTOS_CTMS_Connect(int index)
 {

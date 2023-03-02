@@ -27,6 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Main.Activity_ctms_update" />
+        <activity android:name=".Main.Activity_ctms_background" />
         <activity
             android:name=".Splash"
             android:configChanges="orientation|keyboardHidden|screenSize"

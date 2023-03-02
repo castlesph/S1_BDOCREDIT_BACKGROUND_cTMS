@@ -2,22 +2,16 @@ package com.Source.S1_BDO.BDO.Main;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -25,16 +19,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.Source.S1_BDO.BDO.Main.MainActivity;
 import com.Source.S1_BDO.BDO.BdoApplication;
 import com.Source.S1_BDO.BDO.R;
 import com.Source.S1_BDO.BDO.model.DemoAppActivity;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,14 +35,12 @@ import java.util.concurrent.TimeUnit;
 
 import CTOS.CtCtms;
 import CTOS.CtSystem;
-import CTOS.CtSystemException;
 import castles.ctms.module.commonbusiness.DownloadInfo;
-import castles.ctms.module.commonbusiness.IAgentCallback;
 import castles.ctms.module.commonbusiness.IStatusCallback;
 import castles.ctms.module.commonbusiness.PackageInfo;
 
-public class Activity_ctms_update extends DemoAppActivity {
-    private static final String TAG = "Activity_ctms_update";
+public class Activity_ctms_background extends DemoAppActivity {
+    private static final String TAG = "Activity_ctms_background";
     private CtCtms ctCtms;
     private int installNum = 0;
     private int totalNum = 0;
@@ -83,6 +72,7 @@ public class Activity_ctms_update extends DemoAppActivity {
     private int strCommMode = 0;
     private long inSleep = 100;
     private long inPostDelay = 2000;
+    private boolean checkInstallFlag = false;
     private boolean isLowBattery = false;
 
     // connection information
@@ -162,6 +152,9 @@ public class Activity_ctms_update extends DemoAppActivity {
             //20210127 for CTMS, can remove this flag in the 2nd phase, because we don't need to do Resume download by app level, can run it background
 //            bootflag = intent.getBooleanExtra("REBOOT", false);
             Log.i(TAG, "bootflag: " + bootflag);
+
+            checkInstallFlag = intent.getBooleanExtra("CHECKINSTALL_FLAG", false);
+            Log.i(TAG, "checkInstallFlag: " + checkInstallFlag);
         }
 
         String dispmsg = intent.getStringExtra("pass_in_string");
@@ -453,7 +446,7 @@ public class Activity_ctms_update extends DemoAppActivity {
         super.onDestroy();
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        intent.setClass(Activity_ctms_update.this, MainActivity.class);
+        intent.setClass(Activity_ctms_background.this, MainActivity.class);
         startActivity(intent);
         this.finish();
         Log.i(TAG, "onDestroy:4");
@@ -539,7 +532,7 @@ public class Activity_ctms_update extends DemoAppActivity {
 
     public void vdFinishBackgroundActivity() {
         Log.i(TAG, "vdFinishBackgroundActivity: ");
-        Activity_ctms_update.this.finish();
+        Activity_ctms_background.this.finish();
         // do whatever you need in child activity, but once you want to finish, do this and continue in parent activity
         synchronized (MainActivity.LOCK) {
             MainActivity.LOCK.setCondition(true);
@@ -552,7 +545,7 @@ public class Activity_ctms_update extends DemoAppActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                AlertDialog dialog = new AlertDialog.Builder(Activity_ctms_update.this)
+                AlertDialog dialog = new AlertDialog.Builder(Activity_ctms_background.this)
                         .setTitle("CTMS UPDATE")
                         .setMessage("Pls charge your temrinal to update POS app")
 //                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -605,6 +598,7 @@ public class Activity_ctms_update extends DemoAppActivity {
         });
 
     }
+
     private void vdRebootNow() {
         Log.i(TAG, "vdRebootNow: ");
         Log.i(TAG, "downloaded="+downloaded);
@@ -619,7 +613,7 @@ public class Activity_ctms_update extends DemoAppActivity {
                 @Override
                 public void run() {
 
-                    Activity_ctms_update.this.finish();
+                    Activity_ctms_background.this.finish();
 
                     // do whatever you need in child activity, but once you want to finish, do this and continue in parent activity
                     synchronized (MainActivity.LOCK) {
@@ -647,6 +641,18 @@ public class Activity_ctms_update extends DemoAppActivity {
 
     }
 
+    private void setInstallFlag() {
+        if (checkInstallFlag) {
+            SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            SharedPreferences.Editor editor = wmbPreference.edit();
+            editor.putBoolean("CHECKINSTALL", true);
+            editor.commit();
+            Log.i(TAG, "wmbPreference setInstallFlag: ");
+        }
+
+        Log.i(TAG, "-setInstallFlag: ");
+    }
     IStatusCallback statusCalback = new IStatusCallback() {
 //    IAgentCallback statusCalback = new IAgentCallback.Stub() {
 
@@ -693,7 +699,11 @@ public class Activity_ctms_update extends DemoAppActivity {
                         //Fw + software
                         Log.i(TAG, "getRebootInstallFlag: " + ctCtms.getRebootInstallFlag());
                         if(!fGotFileDownloadFailed)
+                        {
+                            ////new background dl
+                            setInstallFlag();
                             ctCtms.setRebootInstallFlag(true);
+                        }
                     } else {
                         //TODO: we will not set allow to install flag here, and pls show some msg based on your project
                         //then only next CTMS call will try to install the new software and when battery is higher than 35%
@@ -713,7 +723,6 @@ public class Activity_ctms_update extends DemoAppActivity {
                         return;*/
                     }
                 }
-
                 ////new background dl, if isLowBattery true, will finish current UI inside  DisplayDiaglocBox fun
                 if(!isLowBattery) {
                     //20210127 for CTMS end
@@ -939,7 +948,7 @@ public class Activity_ctms_update extends DemoAppActivity {
 
         //Install Callback is not used for Reboot mode
         @Override
-        public void installCallback(int i, castles.ctms.module.commonbusiness.PackageInfo packageInfo) {
+        public void installCallback(int i, PackageInfo packageInfo) {
             /*Start timer*/
             if(isCounterRunning ){
                 isCounterRunning = true;

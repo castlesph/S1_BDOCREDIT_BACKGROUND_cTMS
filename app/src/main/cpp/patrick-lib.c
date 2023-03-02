@@ -4507,6 +4507,61 @@ int inCallJAVA_CTMSUPDATE(BYTE *pbDispMsg, BYTE *pbOutStr, BYTE *pbOutLen)
     return d_OK;
 }
 
+int inCallJAVA_CTMSUPDATEBackGround(BYTE *pbDispMsg, BYTE *pbOutStr, BYTE *pbOutLen)
+{
+    unsigned char uszBuffer[1024+1];
+    int inRet = 0;
+
+    memset(uszBuffer, 0x00, sizeof(uszBuffer));
+
+    vdDebug_LogPrintf("=====inCallJAVA_CTMSUPDATEBackGround=====");
+
+    JNIEnv *env;
+    jint rs = (*jvm)->AttachCurrentThread(jvm, &env, NULL);
+    // Use the env pointer...
+    vdDebug_LogPrintf("jint[%d] *env[%x]", rs, *env);
+
+    if (strlen(pbDispMsg)>0)
+        strcpy(uszBuffer, pbDispMsg);
+
+    vdDebug_LogPrintf("uszBuffer[%s]", uszBuffer);
+
+    jstring jstr = (*env)->NewStringUTF(env, uszBuffer);
+    vdDebug_LogPrintf("jstring[%s]", uszBuffer);
+
+    jclass clazz = (*env)->FindClass(env, "com/Source/S1_BDO/BDO/Main/MainActivity");
+    vdDebug_LogPrintf("jstring[%s]", "com/Source/S1_BDO/BDO/Main/MainActivity");
+
+    jmethodID methodID = (*env)->GetMethodID(env, activityClass, "CTMSUPDATEBackground", "(Ljava/lang/String;)Ljava/lang/String;");
+
+    vdDebug_LogPrintf("jstring[%s]", "CTMSUPDATE");
+
+    jobject result = (*env)->CallObjectMethod(env, activityObj, methodID, jstr);
+
+    jbyte* str = NULL;
+    str = (*env)->GetStringUTFChars(env,(jstring) result, NULL);
+    if (str!=NULL)
+    {
+        vdDebug_LogPrintf("%s", str);
+        *pbOutLen = strlen(str);
+        vdDebug_LogPrintf("strcpy");
+        strcpy(pbOutStr, str);
+
+        vdDebug_LogPrintf("ReleaseStringUTFChars");
+        (*env)->ReleaseStringUTFChars(env, result, str);
+
+    }
+    else
+        *pbOutLen = 0;
+
+    (*env)->DeleteLocalRef(env, jstr);
+    (*env)->DeleteLocalRef(env, clazz);
+    (*env)->DeleteLocalRef(env, result);
+
+    vdDebug_LogPrintf("end inCallJAVA_CTMSUPDATE");
+    return d_OK;
+}
+
 
 JNIEXPORT jint JNICALL
 Java_com_Source_S1_1BDO_BDO_Main_MainActivity_inCTOSS_1Get1stInitFlag(JNIEnv *env, jobject thiz) {
@@ -4532,6 +4587,21 @@ Java_com_Source_S1_1BDO_BDO_Main_Activity_1ctms_1update_inCTOSS_1BackupDataScrip
 	//	  inCTOSS_BackupDataScript("/data/data/com.Source.S1_UOB.UOB/com.Source.S1_UOB.UOB.tbd", szOutPrmFile);
 		inCTOSS_BackupDataScript("/data/data/com.Source.S1_BDO.BDO/com.Source.S1_BDO.BDO.tbd", szOutPrmFile);
 		return 0;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_Source_S1_1BDO_BDO_Main_Activity_1ctms_1background_inCTOSS_1BackupDataScript(JNIEnv *env,
+                                                                                  jobject thiz) {
+    // TODO: implement inCTOSS_BackupDataScript()
+
+    vdDebug_LogPrintf("inCTOSS_BackupDataScript.............");
+    char szOutPrmFile[100+1];
+
+    memset(szOutPrmFile, 0, sizeof(szOutPrmFile));
+    //	  inCTOSS_BackupDataScript("/data/data/pub/com.Source.S1_UOB.UOB.tbd", szOutPrmFile);
+    //	  inCTOSS_BackupDataScript("/data/data/com.Source.S1_UOB.UOB/com.Source.S1_UOB.UOB.tbd", szOutPrmFile);
+    inCTOSS_BackupDataScript("/data/data/com.Source.S1_BDO.BDO/com.Source.S1_BDO.BDO.tbd", szOutPrmFile);
+    return 0;
 }
 
 JNIEXPORT jint JNICALL
@@ -6168,6 +6238,38 @@ Java_com_Source_S1_1BDO_BDO_Main_Activity_1ctms_1update_inCTOSS_1SetEnvInt(JNIEn
     int     ret = -1;
     char    buf[64];
 	const char *szFmt = (*env)->GetStringUTFChars(env, sztag, 0);
+
+    memset (buf, 0, sizeof (buf));
+    sprintf(buf, "%d", invalue);
+    ret = inCTOSS_PutEnvDB (szFmt, buf);
+
+    vdDebug_LogPrintf("inCTOSS_SetEnvInt [%s]=[%d] ret[%d]", szFmt, invalue, ret);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_Source_S1_1BDO_BDO_Main_Activity_1ctms_1background_inCTOSS_1GetEnvInt(JNIEnv *env,
+                                                                           jobject thiz,
+                                                                           jstring sztag) {
+    // TODO: implement inCTOSS_GetEnvInt()
+    int ret = 0;
+
+    const char *szFmt = (*env)->GetStringUTFChars(env, sztag, 0);
+
+    ret = get_env_int(szFmt);
+    vdDebug_LogPrintf("inCTOSS_1GetEnvInt[%d].............", ret);
+
+    return ret;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_Source_S1_1BDO_BDO_Main_Activity_1ctms_1background_inCTOSS_1SetEnvInt(JNIEnv *env,
+                                                                           jobject thiz,
+                                                                           jstring sztag,
+                                                                           jint invalue) {
+    // TODO: implement inCTOSS_SetEnvInt()
+    int     ret = -1;
+    char    buf[64];
+    const char *szFmt = (*env)->GetStringUTFChars(env, sztag, 0);
 
     memset (buf, 0, sizeof (buf));
     sprintf(buf, "%d", invalue);

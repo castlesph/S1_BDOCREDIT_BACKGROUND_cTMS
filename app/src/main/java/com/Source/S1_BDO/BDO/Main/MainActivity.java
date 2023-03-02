@@ -61,6 +61,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Source.S1_BDO.BDO.BdoApplication;
 import com.Source.S1_BDO.BDO.DMenu.Model;
 import com.Source.S1_BDO.BDO.DMenu.GridViewAdapter;
 import com.Source.S1_BDO.BDO.DMenu.ViewPagerAdapter;
@@ -120,6 +121,7 @@ import com.Source.S1_BDO.BDO.utility.GetAppInfor;
 import com.Source.S1_BDO.BDO.utility.GetNetworkInfor;
 import com.Source.S1_BDO.BDO.wub_lib;
 
+import CTOS.CtCtms;
 import CTOS.CtSystem;
 import CTOS.CtSystemException;
 //import splashapp.android.nttd.cas.com.mylibrary.CtLed;
@@ -511,6 +513,28 @@ public class MainActivity extends DemoAppActivity implements View.OnClickListene
         }
     };
 
+    private void CheckInstallFlagAndRunCTMS(SharedPreferences wmbPreference)
+    {
+        int ret = 0;
+        boolean isCheckInstallFlag = wmbPreference.getBoolean("CHECKINSTALL", false);
+        Log.i(TAG, "isCheckInstallFlag=: " + isCheckInstallFlag);
+        if (isCheckInstallFlag )
+        {
+            CtCtms ctCtms = BdoApplication.getCtCtmsObj();
+            if(ctCtms != null) {
+                ret = ctCtms.ResetFolder();
+                Log.i(TAG, "ResetFolder=: " + ret);
+            }
+            wmbPreference.edit().remove("CHECKINSTALL").commit();
+            Log.i(TAG, "call ctms udpate: ");
+            Intent intent = new Intent();
+            intent.putExtra("UPDATE_CONFIG_FLAG", false);
+            intent.setClass(MainActivity.this, Activity_ctms_background.class);
+            startActivity(intent);
+
+        }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -584,7 +608,9 @@ public class MainActivity extends DemoAppActivity implements View.OnClickListene
         boolean isFirstRun = wmbPreference.getBoolean("FIRSTRUN", true);
         Log.i(TAG, "CREDIT:isFirstRun =" + isFirstRun);
 
-        //DLNotFinished = 0;
+        CheckInstallFlagAndRunCTMS(wmbPreference);
+
+        DLNotFinished = 0;
         if (DLNotFinished == 1) {
             //terminal need to restart after call ctms in this case
             ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
@@ -3357,6 +3383,57 @@ public class MainActivity extends DemoAppActivity implements View.OnClickListene
                     //intent.setClass(MainActivity.this, BatchReview.class);
                     intent.setClass(MainActivity.this, Activity_ctms_update.class);
 
+                    bundle.putString("pass_in_string", pass_in_string);
+                    Log.i("pass_in_string", pass_in_string);
+
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    //startActivityForResult(intent, 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        MainActivity.LOCK.setCondition(false);
+
+        synchronized (LOCK) {
+            while (!LOCK.conditionMet()) {
+                try {
+                    LOCK.wait();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Exception when waiting for condition", e);
+                    return "Exception";
+                }
+            }
+        }
+
+        //user_str = "";
+
+        Log.i("PATRICK", user_str);
+        Log.i("PATRICK", "CTMS 789");
+        //pin_num = pin_num + "XXX";
+        //	Toast.makeText(this, pin_num, Toast.LENGTH_SHORT).show();
+        return user_str;
+    }
+
+    public String CTMSUPDATEBackground(String text) throws InterruptedException {
+
+        String user_str = "000";
+        pass_in_string = text;
+
+        new Thread() {
+            public void run() {
+                try {
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+
+                    //intent.setClass(MainActivity.this, BatchReview.class);
+//                    intent.setClass(MainActivity.this, Activity_ctms_update.class);
+                    intent.setClass(MainActivity.this, Activity_ctms_background.class);
+
+                    //remark this line if no need to do check install result after boot up install done
+                    bundle.putBoolean("CHECKINSTALL_FLAG", true);
                     bundle.putString("pass_in_string", pass_in_string);
                     Log.i("pass_in_string", pass_in_string);
 
