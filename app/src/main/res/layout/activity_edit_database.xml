@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.Source.S1_BDO.BDO.EditDatabaseActivity">
+
+    <Button
+        android:id="@+id/btn_edit_terminal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_terminal" />
+
+    <Button
+        android:id="@+id/btn_edit_wave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_wave" />
+
+    <Button
+        android:id="@+id/btn_edit_emv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_emv" />
+
+    <Button
+        android:id="@+id/btn_edit_env"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_env" />
+
+    <Button
+        android:id="@+id/btn_edit_qrpay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_qrpay" />
+
+    <Button
+        android:id="@+id/btn_edit_eftsec"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_eftsec" />
+
+    <Button
+        android:id="@+id/btn_edit_ermtct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_ermtct" />
+
+    <Button
+        android:id="@+id/btn_edit_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_menu" />
+
+    <Button
+        android:id="@+id/btn_edit_quickmenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_quickmenu" />
+
+    <Button
+        android:id="@+id/btn_exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/exit" />
+
+</LinearLayout>

@@ -1,0 +1,220 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:signature="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".SignaturePad.SignaturePadCastles">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:orientation="vertical"
+        android:background="@color/header_bgc">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="180dp"
+                android:layout_gravity="center_horizontal|center"
+                android:background="@drawable/ic_back"
+                />
+
+            <TextView
+                android:id="@+id/app_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center"
+                android:background="@drawable/ic_logo"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView_txn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/transaction_bgc"
+            android:textSize="18dp"
+            android:text=""
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/textView_disp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="Digital Signature"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            >
+        </TextView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/signature_pad_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/buttons_container"
+        android:layout_marginBottom="0dp">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/signature_pad"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/signature_pad_description"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="330dp"
+            android:layout_marginBottom="60dp"
+            android:gravity="center_horizontal"
+            android:text="Please sign here"
+            android:textColor="@color/gray"
+            android:textSize="16sp" />
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/shape_confirm"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="30dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                signature:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@drawable/signpen">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_width="180dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="PLEASE SIGN HERE"
+                    android:textAlignment="center"
+                    android:textColor="@color/blue"
+                    android:textSize="18dp"
+                    android:textStyle="bold"></TextView>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/msg_detail_01"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginRight="14dp"
+                android:gravity="right|center_vertical"
+                android:text="PHP 0.00"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                signature:layout_constraintEnd_toEndOf="parent"
+                signature:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/msg_text_01"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="20dp"
+                android:inputType="textCapCharacters"
+                android:text="TOTAL AMOUNT"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                signature:layout_constraintStart_toStartOf="parent"
+                signature:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
+
+            </TextView>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <com.github.gcacace.signaturepad.views.SignaturePad
+            android:id="@+id/signature_pad"
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="170dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/shape_shadow_signature_panel" />
+
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/buttons_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingTop="16dp">
+
+        <Button
+            android:id="@+id/clear_button"
+            android:layout_width="160dp"
+            android:layout_height="50dp"
+            android:background="@drawable/shape_shadow_keypad"
+            android:text="Clear"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            signature:layout_constraintBottom_toBottomOf="parent"
+            signature:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="160dp"
+            android:layout_height="50dp"
+            android:background="@drawable/shape_button_blue"
+            android:text="OK"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            signature:layout_constraintEnd_toEndOf="parent"
+            signature:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+    </android.support.constraint.ConstraintLayout>
+
+
+
+</RelativeLayout>

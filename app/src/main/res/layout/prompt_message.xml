@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/process_bgc"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:orientation="vertical"
+        android:background="@color/process_bgc"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/app_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_logo"
+            android:layout_gravity="right"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center"
+        android:background="@drawable/shape_white_bg"
+        >
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center_horizontal|center"
+            app:srcCompat="@drawable/icon_print" />
+
+
+        <TextView
+            android:id="@+id/tvmessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal|left"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            tools:text="Printing..."
+            android:layout_gravity="center_vertical|center"
+            >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/tvmessage1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|left"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            tools:text="Printing..."
+            android:layout_gravity="center_vertical|center"
+            >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/tvmessage2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|left"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            tools:text="Printing..."
+            android:layout_gravity="center_vertical|center"
+            >
+
+        </TextView>
+
+
+    </LinearLayout>
+
+</LinearLayout>
