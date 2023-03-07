@@ -975,7 +975,8 @@ int inCTOS_SETTLE_ALL(void)
 		
 		DisplayStatusLine("");
 		
-		inCTOS_CTMSUPDATE();//after settle call CTMS update, inside fun will check batch status
+//		inCTOS_CTMSUPDATE();//after settle call CTMS update, inside fun will check batch status
+        inCTOS_CTMSUPDATE_BackGround();
     }
 
     vdCTOS_TransEndReset();
