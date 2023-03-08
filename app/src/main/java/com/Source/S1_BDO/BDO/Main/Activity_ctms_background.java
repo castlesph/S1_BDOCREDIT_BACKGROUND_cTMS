@@ -697,10 +697,12 @@ public class Activity_ctms_background extends DemoAppActivity {
                     {
                         //Do not allow to do installation
                         //Fw + software
-                        Log.i(TAG, "getRebootInstallFlag: " + ctCtms.getRebootInstallFlag());
+                        Log.i(TAG, "devtest getRebootInstallFlag: " + ctCtms.getRebootInstallFlag());
+						Log.i(TAG, "devtest fGotFileDownloadFailed: " + fGotFileDownloadFailed);
                         if(!fGotFileDownloadFailed)
                         {
                             ////new background dl
+                            Log.i(TAG, "devtest before setInstallFlag and ctCtms.setRebootInstallFlag");
                             setInstallFlag();
                             ctCtms.setRebootInstallFlag(true);
                         }
@@ -835,6 +837,7 @@ public class Activity_ctms_background extends DemoAppActivity {
             //20210127 for CTMS
             if((i != 0) && (i != 4096)) {
                 //Download not succ, cannot set install flag to true when goes readyCallback
+                Log.i(TAG, "devtest set fGotFileDownloadFailed to true");
                 fGotFileDownloadFailed = true;
                 Log.e("CTMS-cb-DL ", "File DL failed: " + downloadInfo.fileName);
             }

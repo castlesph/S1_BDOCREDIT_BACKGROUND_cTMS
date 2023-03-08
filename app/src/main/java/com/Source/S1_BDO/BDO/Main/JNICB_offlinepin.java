@@ -266,7 +266,7 @@ class JNICB_implements_EMV implements JNICB_offlinepin.cb_EMV
 		 vpinpad.SetPinDigitEnable(false); //EMV layout show PinDigit TextView
 		 vpinpad.SetPinTextEnable(false); //EMV layout show PinText TextView
 
-		 vpinpad.SetPINSoundEnable(true);
+		 //vpinpad.SetPINSoundEnable(true);
 		//vpinpad.InitAllVKBD_WidthHeight_and_Padding(130,130,20,360,765);//(width_of_img,heigh_of_img,padding between img,center X,center Y)
 		//call InitAllVKBD_WidthHeight_and_Padding first when needed(after setting values of VKBD)
 		//be ware of the size of the layout group,last two parameter are center(x,y) of the layout group,and (x,y)should not near edge

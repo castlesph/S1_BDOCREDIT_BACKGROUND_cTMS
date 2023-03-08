@@ -1647,7 +1647,9 @@ int inCTOS_CTMSUPDATE_BackGround(void)
     vdDisplayMessageBox(1, 8, "Processing", "", MSG_PLS_WAIT, MSG_TYPE_PROCESS);
     CTOS_Delay(500);
 
-    inRet = inCallJAVA_CTMSUPDATE(szInbuf, szOubuf, &inLen);
+    //inRet = inCallJAVA_CTMSUPDATE(szInbuf, szOubuf, &inLen);
+    inRet = inCallJAVA_CTMSUPDATEBackGround(szInbuf, szOubuf, &inLen);
+    
     vdDebug_LogPrintf("inCallJAVA_CTMSUPDATE, inRet=[%d]", inRet);
 
     return d_OK;

@@ -8383,6 +8383,9 @@ void vdCTOS_PrintCRC(void)
 	   // write crc (credit/cup)
 	   memset(szCRC, 0x00, sizeof(szCRC));
 	   getAppPackageInfo(V5S_BDOCREDIT, szCRC);
+	   //testlang
+	   memset(szCRC, 0x00, sizeof(szCRC));
+	   strcpy(szCRC,"11223345");
 	   put_env_char("CREDITCRC",szCRC);
 
 	   // write crc (debit)
@@ -17466,11 +17469,13 @@ int inPrinterConfig(int inFlagBool)
         {
 
             //set print config fast mode to enable
-            usRtn = CTOS_PrinterSetConfig(d_PRINTER_CONFIG_FAST_MODE, d_PRINTER_CONFIG_FAST_MODE_ENABLE);
+            //testlang
+            //usRtn = CTOS_PrinterSetConfig(d_PRINTER_CONFIG_FAST_MODE, d_PRINTER_CONFIG_FAST_MODE_ENABLE);
             vdDebug_LogPrintf("CTOS_PrinterSetConfig enable = 0x%04X", usRtn);
 
             //get print config fast mode
-            usRtn = CTOS_PrinterGetConfig(d_PRINTER_CONFIG_FAST_MODE, &iValue);
+            //testlang
+            //usRtn = CTOS_PrinterGetConfig(d_PRINTER_CONFIG_FAST_MODE, &iValue);
             vdDebug_LogPrintf("CTOS_PrinterGetConfig = 0x%04X", usRtn);
             vdDebug_LogPrintf("iValue = %d", iValue);
 
@@ -17479,11 +17484,13 @@ int inPrinterConfig(int inFlagBool)
         {
 
             //set print config fast mode to disable
-            usRtn = CTOS_PrinterSetConfig(d_PRINTER_CONFIG_FAST_MODE,  d_PRINTER_CONFIG_FAST_MODE_DISABLE);
+            //testlang
+            //usRtn = CTOS_PrinterSetConfig(d_PRINTER_CONFIG_FAST_MODE,  d_PRINTER_CONFIG_FAST_MODE_DISABLE);
             vdDebug_LogPrintf("CTOS_PrinterSetConfig disable = 0x%04X", usRtn);
 
             //get print config fast mode
-            usRtn = CTOS_PrinterGetConfig(d_PRINTER_CONFIG_FAST_MODE, &iValue);
+            //testlang
+            //usRtn = CTOS_PrinterGetConfig(d_PRINTER_CONFIG_FAST_MODE, &iValue);
             vdDebug_LogPrintf("CTOS_PrinterGetConfig = 0x%04X", usRtn);
             vdDebug_LogPrintf("iValue = %d", iValue);
 
